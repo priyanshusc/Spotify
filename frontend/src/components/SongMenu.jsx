@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { MoreVertical, Plus, ChevronRight, Share, Radio, User, MinusCircle, Search } from 'lucide-react';
+import { MoreVertical, Plus, ChevronRight, Share, Radio, User, MinusCircle, Search, Trash } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { usePlaylists } from '../context/PlaylistContext';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '../api/api';
+import { toast } from 'sonner';
 import { 
     useFloating, 
     autoUpdate, 
@@ -14,8 +19,39 @@ import {
 } from '@floating-ui/react';
 
 const SongMenu = ({ song, playlists = [], onAddToPlaylist, onRemoveFromPlaylist, onRemoveLike, context: menuContext }) => {
+    const { user } = useAuth();
+    const { refreshPlaylists } = usePlaylists();
+    const queryClient = useQueryClient();
+
     const [isOpen, setIsOpen] = useState(false);
     const [isSubOpen, setIsSubOpen] = useState(false);
+
+    const songArtistId = typeof song.artist === 'object' ? song.artist?._id : song.artist;
+    const userId = user?._id || user?.id;
+    const isOwner = user?.role === 'artist' && userId === songArtistId;
+
+    const deleteMutation = useMutation({
+        mutationFn: async () => {
+            const res = await api.delete(`/music/delete/${song._id}`);
+            return res.data;
+        },
+        onSuccess: (data) => {
+            toast.success(data.message || 'Song deleted successfully');
+            queryClient.invalidateQueries({ queryKey: ['songs'] });
+            queryClient.invalidateQueries({ queryKey: ['allSongs'] });
+            queryClient.invalidateQueries({ queryKey: ['searchSongs'] });
+            queryClient.invalidateQueries({ queryKey: ['artistProfile'] });
+            queryClient.invalidateQueries({ queryKey: ['authUser'] });
+            
+            // Refresh playlists to accurately reflect the deletion in the sidebar counts
+            if (refreshPlaylists) {
+                refreshPlaylists();
+            }
+        },
+        onError: (err) => {
+            toast.error(err.response?.data?.message || 'Failed to delete song');
+        }
+    });
 
     // --- Main Menu Configuration ---
     const { refs, floatingStyles, context } = useFloating({
@@ -188,6 +224,27 @@ const SongMenu = ({ song, playlists = [], onAddToPlaylist, onRemoveFromPlaylist,
                         <Share size={16} className="text-gray-400" />
                         <span>Share</span>
                     </button>
+
+                    {/* 4. Delete Music (Only shows if current artist is the creator) */}
+                    {isOwner && (
+                        <>
+                            <div className="h-[1px] bg-white/10 my-1 mx-2"></div>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (window.confirm("Are you sure you want to delete this song?")) {
+                                        deleteMutation.mutate();
+                                        setIsOpen(false);
+                                    }
+                                }}
+                                disabled={deleteMutation.isPending}
+                                className="w-full text-left px-3 py-2.5 hover:bg-white/10 rounded-sm text-sm text-red-500 flex items-center gap-3 transition"
+                            >
+                                <Trash size={16} className="text-red-500" />
+                                <span>{deleteMutation.isPending ? 'Deleting...' : 'Delete Music'}</span>
+                            </button>
+                        </>
+                    )}
                 </div>
             )}
         </>

@@ -7,6 +7,7 @@ import fs from "fs"
 import cloudinary from "../config/cloudinary.js";
 import Music from "../models/music.model.js"
 import User from "../models/user.model.js"
+import Playlist from "../models/playlist.model.js"
 
 export const createMusic = async (req, res) => {
     try {
@@ -125,6 +126,10 @@ export const deleteMusic = async (req, res) => {
             User.updateMany(
                 { likedSongs: songId },
                 { $pull: { likedSongs: songId } }
+            ),
+            Playlist.updateMany(
+                { musics: songId },
+                { $pull: { musics: songId } }
             )
         ]);
 

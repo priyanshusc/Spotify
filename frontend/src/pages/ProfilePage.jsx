@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { usePlaylists } from '../context/PlaylistContext';
-import { User, Music, Plus, Heart, Mic2, CheckCircle } from 'lucide-react';
+import { User, Music, Plus, Heart, Mic2, CheckCircle, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import CreatePlaylistModal from '../components/CreatePlaylistModal';
+import UploadMusicModal from '../components/UploadMusicModal';
 import SongCard from '../components/Songcard';
 import PlaylistImage from '../components/PlaylistImage';
 
@@ -11,6 +12,7 @@ const ProfilePage = () => {
     const { user } = useAuth(); // Full user object from /user/profile
     const { playlists, refreshPlaylists } = usePlaylists();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
     const isArtist = user?.role === 'artist';
 
@@ -77,9 +79,18 @@ const ProfilePage = () => {
             <div className="p-8 space-y-12">
                 {isArtist && (
                     <section>
-                        <h2 className="text-2xl font-black mb-6 flex items-center gap-3">
-                            <Mic2 className="text-emerald-500" /> Your Uploads
-                        </h2>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-2xl font-black flex items-center gap-3">
+                                <Mic2 className="text-emerald-500" /> Your Uploads
+                            </h2>
+                            <button
+                                onClick={() => setIsUploadModalOpen(true)}
+                                className="flex items-center gap-2 text-sm font-bold text-zinc-400 hover:text-white transition group bg-white/5 px-4 py-2 rounded-full hover:bg-white/10"
+                            >
+                                <Upload size={18} className="group-hover:-translate-y-1 transition-transform text-emerald-500" />
+                                Create Music
+                            </button>
+                        </div>
                         {artistSongs.length > 0 ? (
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
                                 {artistSongs.map(song => (
@@ -147,6 +158,11 @@ const ProfilePage = () => {
                     refreshPlaylists();
                     setIsModalOpen(false);
                 }}
+            />
+
+            <UploadMusicModal
+                isOpen={isUploadModalOpen}
+                onClose={() => setIsUploadModalOpen(false)}
             />
         </div>
     );

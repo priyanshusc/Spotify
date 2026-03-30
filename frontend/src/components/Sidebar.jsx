@@ -1,7 +1,8 @@
-import { Home, Search, Library, Plus, Heart } from 'lucide-react';
+import { Home, Search, Library, Plus, Heart, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import CreatePlaylistModal from './CreatePlaylistModal'; 
+import UploadMusicModal from './UploadMusicModal';
 import { useAuth } from '../context/AuthContext';
 import PlaylistImage from './PlaylistImage';
 import { usePlaylists } from '../context/PlaylistContext';
@@ -12,6 +13,7 @@ const Sidebar = () => {
     const { playlists, refreshPlaylists } = usePlaylists(); 
     
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
     const handlePlaylistCreated = () => {
         refreshPlaylists(); 
@@ -35,6 +37,18 @@ const Sidebar = () => {
                     </div>
                     <span className="font-bold text-gray-300 group-hover:text-white transition-colors ml-4">Liked Songs</span>
                 </Link>
+
+                {user?.role === 'artist' && (
+                    <button 
+                        onClick={() => setIsUploadModalOpen(true)}
+                        className="flex items-center gap-4 group cursor-pointer py-2 hover:bg-[#282828] rounded-md transition-all text-left"
+                    >
+                        <div className="bg-[#282828] p-1 rounded-sm group-hover:bg-white transition-colors flex items-center justify-center">
+                            <Upload size={16} className="text-gray-300 group-hover:text-black transition-colors" />
+                        </div>
+                        <span className="font-bold text-gray-300 group-hover:text-white transition-colors ml-4">Upload Music</span>
+                    </button>
+                )}
             </div>
 
             <div className="bg-[#121212] rounded-lg flex-1 p-4 overflow-hidden flex flex-col">
@@ -89,6 +103,11 @@ const Sidebar = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onPlaylistCreated={handlePlaylistCreated}
+            />
+
+            <UploadMusicModal 
+                isOpen={isUploadModalOpen}
+                onClose={() => setIsUploadModalOpen(false)}
             />
         </div>
     );
