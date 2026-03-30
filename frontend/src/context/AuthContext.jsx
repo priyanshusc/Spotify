@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
             await api.post("/auth/logout");
 
             queryClient.setQueryData(["authUser"], null);
-
+            queryClient.clear();
             // queryClient.invalidateQueries(["authUser"]);
         } catch (error) {
             console.error("Logout failed:", error);

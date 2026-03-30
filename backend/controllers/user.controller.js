@@ -4,7 +4,15 @@ import ErrorHandler from "../utils/error.js"
 export const getUserProfile = async (req, res, next) => {
     try {
 
-        const user = await User.findById(req.user.id).populate("musics profilePicture").select("-password")
+        const user = await User.findById(req.user.id).populate({
+            path: "musics",
+            populate: {
+                path: "artist",
+                select: "username profilePicture"
+            }
+        })
+            .populate("profilePicture")
+            .select("-password");
 
         if (!user) {
             // 👇 if not use "error.js"
@@ -30,7 +38,7 @@ export const getArtistPublicProfile = async (req, res, next) => {
     try {
         const id = req.params.id
 
-        const artist = await User.findById(id).populate("musics").select("username musics role profilePicture")
+        const artist = await User.findById(id).populate("musics").select("username musics role profilePicture followers")
 
         if (!artist || artist.role !== "artist") {
             return next(new ErrorHandler("Artist not found", 404))

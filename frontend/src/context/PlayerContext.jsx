@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useRef, useEffect } from "react";
+import { useAuth } from "./AuthContext";
 
 const PlayerContext = createContext();
 
 export const PlayerProvider = ({ children }) => {
 
-    // Function to handle volume changes
+    const { user } = useAuth()
     const [currentSong, setCurrentSong] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [queue, setQueue] = useState([]);
@@ -18,6 +19,22 @@ export const PlayerProvider = ({ children }) => {
     const [duration, setDuration] = useState(0); // Total song length
 
     const audioRef = useRef(new Audio());
+
+    useEffect(() => {
+        if (!user) {
+            // Stop the music immediately
+            audioRef.current.pause();
+            audioRef.current.src = "";
+
+            // Reset all player states to default
+            setCurrentSong(null);
+            setIsPlaying(false);
+            setQueue([]);
+            setProgress(0);
+            setCurrentTime(0);
+            setDuration(0);
+        }
+    }, [user]);
 
     const skipNext = () => {
         if (!currentSong || queue.length === 0) return;

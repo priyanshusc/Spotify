@@ -107,7 +107,7 @@ const SearchPage = () => {
                         {results?.songs?.length > 0 && (
                             <section>
                                 <h2 className="text-2xl font-bold text-white mb-4">Songs</h2>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-52">
                                     {results.songs.map(song => (
                                         <SongCard key={song._id} song={song} />
                                     ))}

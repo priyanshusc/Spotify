@@ -30,7 +30,7 @@ const HomePage = () => {
         <div className="space-y-6">
             <h1 className="text-3xl font-bold text-white mb-6">Made for You</h1>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-52">
                 {songs?.map((song) => (
                     <SongCard key={song._id} song={song} />
                 ))}

@@ -2,19 +2,36 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from './Header';
 import Footer from './Footer';
+import { useAuth } from '../context/AuthContext';
 
 const AppLayout = () => {
+    const { user, isLoading } = useAuth()
+
+    if (isLoading) {
+        return <div className="min-h-screen bg-black" />;
+    }
+
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-black text-white">
+                <Header />
+                <Outlet />
+            </div>
+        );
+    }
+
     return (
-        <div className="h-screen bg-black flex flex-col overflow-hidden">
+        <div className="flex flex-col h-screen bg-black text-white">
             <div className="flex flex-1 overflow-hidden">
                 <Sidebar />
 
-                <main className="flex-1 bg-spotify-light mt-2 mr-2 mb-2 rounded-lg overflow-y-auto relative">
+                <div className="flex-1 flex flex-col relative overflow-y-auto">
                     <Header />
-                    <div className="p-6">
+
+                    <main className="flex-1 p-4">
                         <Outlet />
-                    </div>
-                </main>
+                    </main>
+                </div>
             </div>
 
             <Footer />

@@ -14,6 +14,7 @@ import LikedSongsPage from './pages/LikedSongsPage';
 import PlaylistPage from './pages/PlaylistPage';
 import { PlaylistProvider } from './context/PlaylistContext';
 import ArtistPage from './pages/ArtistPage';
+import ProfilePage from './pages/ProfilePage';
 
 const queryClient = new QueryClient()
 
@@ -70,6 +71,14 @@ const router = createBrowserRouter([
         path: "/artist/:artistId",
         element: (
           <ArtistPage />
+        )
+      },
+      {
+        path: "/profile",
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
         )
       }
     ]

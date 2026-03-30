@@ -60,27 +60,27 @@ const LikedSongsPage = () => {
     if (isLoading) return <div className="p-8 text-white">Loading your library...</div>;
 
     return (
-        <div className="min-h-full bg-gradient-to-b from-[#5038a0] to-[#121212] -mt-6 -mx-6">
+            <div className="min-h-full bg-gradient-to-b from-[#5038a0] to-[#121212] -mt-6 -mx-6">
 
-            {/* --- Hero Header Section --- */}
-            <div className="flex items-end gap-6 p-8 h-60 md:h-80 bg-gradient-to-b from-transparent to-[rgba(0,0,0,0.5)]">
-                <div className="bg-gradient-to-br from-[#450af5] to-[#c4efd9] w-40 h-40 md:w-36 md:h-36 shadow-2xl flex items-center justify-center rounded-sm">
-                    <Heart size={80} fill="white" className="text-white" />
-                </div>
-                <div className="flex flex-col gap-2">
-                    <span className="text-sm font-bold text-white uppercase">Playlist</span>
-                    <h1 className="text-5xl md:text-7xl font-black text-white">Liked Songs</h1>
-                    <div className="flex items-center gap-2 mt-2">
-                        <img src={user?.profilePicture} className="w-6 h-6 rounded-full" alt="user" />
-                        <span className="text-white text-sm font-bold hover:underline cursor-pointer">{user?.username}</span>
-                        <span className="text-white text-sm">• {songs?.length} songs</span>
+                {/* --- Hero Header Section --- */}
+                <div className="flex items-end gap-6 p-8 h-60 md:h-80 bg-gradient-to-b from-transparent to-[rgba(0,0,0,0.5)]">
+                    <div className="bg-gradient-to-br from-[#450af5] to-[#c4efd9] w-40 h-40 md:w-36 md:h-36 shadow-2xl flex items-center justify-center rounded-sm">
+                        <Heart size={80} fill="white" className="text-white" />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <span className="text-sm font-bold text-white uppercase">Playlist</span>
+                        <h1 className="text-5xl md:text-7xl font-black text-white">Liked Songs</h1>
+                        <div className="flex items-center gap-2 mt-2">
+                            <img src={user?.profilePicture} className="w-6 h-6 rounded-full" alt="user" />
+                            <span className="text-white text-sm font-bold hover:underline cursor-pointer">{user?.username}</span>
+                            <span className="text-white text-sm">• {songs?.length} songs</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* --- Action Bar --- */}
-            <div className="p-8">
-                <button
+                {/* --- Action Bar --- */}
+                <div className="p-8">
+                    <button
                     onClick={() => songs?.length > 0 && playSong(songs[0])}
                     className="w-14 h-14 bg-spotify-green rounded-full flex items-center justify-center hover:scale-105 transition shadow-lg active:scale-95"
                 >
